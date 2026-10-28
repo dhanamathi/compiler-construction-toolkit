@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shift-Reduce Parser Simulator</title>
+  <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+  <main class="container">
+    <header>
+      <h1>Shift-Reduce Parser Simulator</h1>
+      <p>Compiler Design Mini Project</p>
+    </header>
+
+    <section class="panel">
+      <h2>Input Configuration</h2>
+      <label for="grammar">Grammar (one production per line)</label>
+      <textarea id="grammar" rows="4">E -> E + T
+E -> T
+T -> id</textarea>
+
+      <label for="inputString">Input String</label>
+      <input id="inputString" value="id + id" placeholder="Example: id + id">
+
+      <label for="startSymbol">Start Symbol</label>
+      <input id="startSymbol" value="E">
+
+      <button id="runButton" type="button" onclick="runParser()">Simulate Parser</button>
+      <p id="message" role="alert"></p>
+    </section>
+
+    <section class="panel">
+      <h2>Parsing Steps</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Step</th><th>Stack</th><th>Remaining Input</th><th>Action</th></tr></thead>
+          <tbody id="resultBody">
+            <tr><td colspan="4">Run the simulation to see results.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 id="finalResult" aria-live="polite"></h3>
+    </section>
+  </main>
+  <script src="static/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Three Address Code Generator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Three Address Code Generator</h1>
+    <p>Compiler Design | Intermediate Code Generation</p>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h2>Enter an Expression</h2>
+      <p>Example: a = b + c * d</p>
+
+      <input
+        type="text"
+        id="expression"
+        placeholder="Enter expression, e.g. a = b + c * d"
+        autocomplete="off"
+      >
+
+      <div class="buttons">
+        <button id="generateBtn">Generate TAC</button>
+        <button id="exampleBtn" class="secondary">Try Example</button>
+        <button id="clearBtn" class="danger">Clear</button>
+      </div>
+
+      <p id="error" role="alert"></p>
+    </section>
+
+    <section class="card">
+      <h2>Generated Three Address Code</h2>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Step</th>
+              <th>Three Address Instruction</th>
+            </tr>
+          </thead>
+          <tbody id="output">
+            <tr>
+              <td colspan="2" class="empty">
+                Your generated code will appear here.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <button id="copyBtn" class="copy-btn">Copy Code</button>
+    </section>
+
+    <section class="card">
+      <h2>About Three Address Code</h2>
+      <p>
+        Three Address Code (TAC) is an intermediate representation
+        used in compiler design. Each instruction generally contains
+        at most one operator and up to three addresses.
+      </p>
+      <p><strong>Example:</strong> a = b + c * d</p>
+      <pre>t1 = c * d
+t2 = b + t1
+a = t2</pre>
+    </section>
+  </main>
+
+  <footer>
+    <p>Compiler Design Mini Project | TAC Generator</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

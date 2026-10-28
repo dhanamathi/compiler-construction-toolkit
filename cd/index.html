@@ -1,0 +1,211 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#081610">
+    <title>Syntax Grove | Compiler Design</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+
+    <header class="navbar glass">
+        <a class="brand" href="#home"><span class="brand-icon">✦</span> SYNTAX <b>GROVE</b></a>
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#explorer">Syntax Tree</a>
+            <a href="#translation">Translation Lab</a>
+        </nav>
+        <a class="nav-button" href="#explorer">Explore ↗</a>
+    </header>
+
+    <main>
+        <section class="hero section" id="home">
+            <div class="hero-copy">
+                <div class="eyebrow"><span class="live-dot"></span> COMPILER DESIGN LAB</div>
+                <h1>Discover the<br>beauty of <span>Syntax Tree & SDT.</span></h1>
+                <p>Explore syntax trees and syntax-directed translation through an interactive learning experience inspired by nature.</p>
+                <div class="hero-actions">
+                    <a class="primary-button" href="#explorer">Explore Syntax Tree →</a>
+                    <a class="secondary-button" href="#translation">Enter Translation Lab</a>
+                </div>
+                <div class="hero-note">✧ Understand the structure behind every expression.</div>
+            </div>
+
+            <div class="hero-art">
+                <div class="orbit orbit-one"></div>
+                <div class="orbit orbit-two"></div>
+                <div class="hero-glass-card glass">
+                    <div class="card-top">
+                        <span class="tiny-label">EXPRESSION TREE</span>
+                        <span class="status-pill">● ACTIVE</span>
+                    </div>
+                    <div class="mini-tree">
+                        <div class="tree-node root-node">*</div>
+                        <div class="tree-branches">
+                            <div class="tree-branch">
+                                <div class="tree-node">+</div>
+                                <div class="leaf-pair">
+                                    <span class="tree-node leaf">3</span>
+                                    <span class="tree-node leaf">4</span>
+                                </div>
+                            </div>
+                            <div class="tree-branch"><div class="tree-node">5</div></div>
+                        </div>
+                    </div>
+                    <div class="hero-card-bottom">
+                        <span>Syntax Tree</span><span class="accent-text">(3 + 4) * 5</span>
+                    </div>
+                </div>
+                <div class="floating-chip chip-one glass">AST · Abstract Syntax Tree</div>
+                <div class="floating-chip chip-two glass">TAC · Three Address Code</div>
+                <div class="leaf-decoration leaf-one">❧</div>
+                <div class="leaf-decoration leaf-two">❧</div>
+            </div>
+        </section>
+
+        <section class="concepts section">
+            <div class="section-heading">
+                <span class="eyebrow">THE FOUNDATIONS</span>
+                <h2>Two concepts. <span>One journey.</span></h2>
+                <p>Learn how expressions become structured representations and intermediate instructions.</p>
+            </div>
+            <div class="concept-grid">
+                <article class="concept-card glass">
+                    <div class="concept-icon">⌘</div>
+                    <span class="card-index">01 / STRUCTURE</span>
+                    <h3>Syntax Tree</h3>
+                    <p>Represent an arithmetic expression as a tree of operators and operands, revealing its hierarchical structure.</p>
+                    <a href="#explorer">Open Explorer →</a>
+                </article>
+                <article class="concept-card glass">
+                    <div class="concept-icon">⟡</div>
+                    <span class="card-index">02 / TRANSLATION</span>
+                    <h3>Syntax-Directed Translation</h3>
+                    <p>Generate intermediate code from an expression using temporary variables and syntax-directed actions.</p>
+                    <a href="#translation">Open Lab →</a>
+                </article>
+            </div>
+        </section>
+
+        <section class="workspace section" id="explorer">
+            <div class="section-heading">
+                <span class="eyebrow">INTERACTIVE WORKSPACE / 01</span>
+                <h2>Syntax Tree <span>Explorer</span></h2>
+                <p>Enter an arithmetic expression and inspect its abstract syntax tree.</p>
+            </div>
+
+            <div class="workspace-card glass">
+                <div class="workspace-header">
+                    <div>
+                        <span class="tiny-label">INPUT EXPRESSION</span>
+                        <h3>Build your tree</h3>
+                    </div>
+                    <span class="status-pill">BROWSER ENGINE</span>
+                </div>
+
+                <form id="tree-form" class="expression-form" novalidate>
+                    <label for="tree-expression">Arithmetic expression</label>
+                    <div class="input-row">
+                        <input id="tree-expression" type="text" maxlength="200" placeholder="Example: (3 + 4) * 5" autocomplete="off">
+                        <button class="primary-button" type="submit">Generate Tree ↗</button>
+                    </div>
+                    <div class="examples">
+                        <span>Try:</span>
+                        <button type="button" class="example-button" data-expression="(3 + 4) * 5">(3 + 4) * 5</button>
+                        <button type="button" class="example-button" data-expression="8 / 2 + 6">8 / 2 + 6</button>
+                        <button type="button" class="example-button" data-expression="2 ** 3 + 1">2 ** 3 + 1</button>
+                    </div>
+                </form>
+
+                <div class="result-heading">
+                    <h3>Abstract Syntax Tree</h3>
+                    <span id="tree-status">Waiting for input</span>
+                </div>
+                <div id="tree-output" class="tree-output empty-state">
+                    <div class="empty-symbol">⌘</div>
+                    <p>Your syntax tree will appear here.</p>
+                    <span>Enter an expression above to begin.</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="workspace section" id="translation">
+            <div class="section-heading">
+                <span class="eyebrow">INTERACTIVE WORKSPACE / 02</span>
+                <h2>Translation <span>Lab</span></h2>
+                <p>Generate Three-Address Code (TAC) from an arithmetic expression.</p>
+            </div>
+
+            <div class="workspace-card glass">
+                <div class="workspace-header">
+                    <div>
+                        <span class="tiny-label">SYNTAX-DIRECTED TRANSLATION</span>
+                        <h3>Expression to intermediate code</h3>
+                    </div>
+                    <span class="status-pill">TAC GENERATOR</span>
+                </div>
+
+                <form id="translation-form" class="expression-form" novalidate>
+                    <label for="translation-expression">Arithmetic expression</label>
+                    <div class="input-row">
+                        <input id="translation-expression" type="text" maxlength="200" placeholder="Example: 2 + 3 * 4" autocomplete="off">
+                        <button class="primary-button" type="submit">Translate ↗</button>
+                    </div>
+                    <div class="examples">
+                        <span>Try:</span>
+                        <button type="button" class="example-button" data-expression="2 + 3 * 4">2 + 3 * 4</button>
+                        <button type="button" class="example-button" data-expression="(10 - 4) / 2">(10 - 4) / 2</button>
+                    </div>
+                </form>
+
+                <div class="translation-results">
+                    <div class="code-panel">
+                        <div class="panel-heading"><span>THREE-ADDRESS CODE</span><span class="code-dot"></span></div>
+                        <pre id="code-output"># Generated code will appear here</pre>
+                    </div>
+                    <div class="code-panel">
+                        <div class="panel-heading"><span>EXPRESSION DETAILS</span><span class="code-dot"></span></div>
+                        <div id="translation-details" class="details-content">
+                            Submit an expression to view its generated instructions.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="closing section">
+            <div class="closing-card glass">
+                <span class="eyebrow">KEEP EXPLORING</span>
+                <h2>Every expression has a <span>story.</span></h2>
+                <p>Understand its structure. Follow its meaning. Discover how compilers translate it.</p>
+                <a href="#home" class="primary-button">Back to the beginning ↑</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <a class="brand" href="#home"><span class="brand-icon">✦</span> SYNTAX <b>GROVE</b></a>
+        <p>Compiler Design Learning Lab · HTML, CSS & JavaScript</p>
+    </footer>
+
+    <div id="toast" class="toast" role="alert" aria-live="assertive">
+        <div class="toast-icon">!</div>
+        <div class="toast-copy">
+            <strong id="toast-title">Invalid Expression!</strong>
+            <p id="toast-message">Please check your input.</p>
+        </div>
+        <button type="button" id="toast-close" aria-label="Close error">×</button>
+        <div class="toast-progress"></div>
+    </div>
+
+    <script src="app.js"></script>
+    <script src="app.js"></script>
+    <script src="sdt-generator.js"></script>
+</body>
+</html>

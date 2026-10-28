@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f4ef">
+  <title>LL(1) Workbench</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="LL(1) Workbench home">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span>parse<span class="brand-dot">/</span>lab</span>
+    </a>
+    <div class="topbar-right">
+      <span class="engine-label"><span class="live-dot"></span> LL(1) ENGINE</span>
+      <button class="icon-button" id="resetButton" type="button" title="Reset to example" aria-label="Reset to example">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.64-6.36L3 8m0-5v5h5"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <section class="intro-row" aria-labelledby="pageTitle">
+      <div>
+        <p class="eyebrow">COMPILER DESIGN / PLAYGROUND 01</p>
+        <h1 id="pageTitle">Predictive parsing<span class="title-period">.</span></h1>
+      </div>
+      <div class="intro-note"><span class="note-rule"></span><span>From grammar to parse trace,<br>one decision at a time.</span></div>
+    </section>
+
+    <section class="workbench" aria-label="LL(1) parser workbench">
+      <div class="panel grammar-panel">
+        <div class="panel-heading">
+          <div class="heading-title"><span class="step-number">01</span><h2>Grammar</h2></div>
+          <label class="select-wrap" for="exampleSelect">
+            <span class="sr-only">Load example grammar</span>
+            <select id="exampleSelect">
+              <option value="expression">Expression grammar</option>
+              <option value="assignment">Assignment grammar</option>
+              <option value="list">List grammar</option>
+            </select>
+            <span class="select-chevron" aria-hidden="true">⌄</span>
+          </label>
+        </div>
+        <p class="panel-help">One production per line. Use <code>|</code> for alternatives and <code>ε</code> for empty.</p>
+        <label class="sr-only" for="grammarInput">Grammar productions</label>
+        <textarea id="grammarInput" spellcheck="false" autocapitalize="off" aria-describedby="grammarHint"></textarea>
+        <div class="editor-footer">
+          <span id="grammarHint">Start symbol is the first production’s left side.</span>
+          <span class="line-count" id="lineCount">0 lines</span>
+        </div>
+        <div class="parse-input-block">
+          <div class="input-label-row"><label for="inputString">Input string</label><span>append <code>$</code> automatically</span></div>
+          <div class="input-control">
+            <input id="inputString" type="text" spellcheck="false" autocomplete="off" value="id + id * id" aria-label="Input string to parse">
+            <button id="parseButton" class="run-button" type="button"><span>Parse</span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11m-4-4 4 4-4 4"/></svg></button>
+          </div>
+          <p class="input-hint">Separate tokens with spaces when terminals contain multiple characters.</p>
+        </div>
+      </div>
+
+      <div class="analysis-column">
+        <div class="status-strip" id="statusStrip" role="status" aria-live="polite">
+          <span class="status-icon" id="statusIcon">✓</span>
+          <span id="statusText">Grammar is LL(1)</span>
+          <span class="status-meta" id="statusMeta">READY</span>
+        </div>
+        <div class="panel results-panel">
+          <div class="results-topline">
+            <div class="heading-title"><span class="step-number">02</span><h2>Analysis</h2></div>
+            <div class="tab-list" role="tablist" aria-label="Analysis views">
+              <button class="tab active" role="tab" aria-selected="true" aria-controls="analysisContent" id="firstFollowTab" data-view="sets">FIRST / FOLLOW</button>
+              <button class="tab" role="tab" aria-selected="false" aria-controls="analysisContent" id="tableTab" data-view="table">TABLE</button>
+            </div>
+          </div>
+          <div class="analysis-content" id="analysisContent" role="tabpanel" aria-labelledby="firstFollowTab"></div>
+        </div>
+
+        <div class="panel trace-panel">
+          <div class="trace-heading">
+            <div class="heading-title"><span class="step-number">03</span><h2>Parse trace</h2></div>
+            <span class="trace-result" id="traceResult">WAITING</span>
+          </div>
+          <div class="trace-table-wrap">
+            <table class="trace-table">
+              <thead><tr><th>STEP</th><th>STACK</th><th>INPUT</th><th>ACTION</th></tr></thead>
+              <tbody id="traceBody"><tr class="empty-row"><td colspan="4">Run a parse to see each stack transition.</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+    <footer class="page-footer"><span>PARSE / ANALYZE / UNDERSTAND</span><span>LL(1) WORKBENCH <b>·</b> CLIENT-SIDE</span></footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b1020">
+<title>Compiler Lab Pro — Compiler Design Workbench</title>
+<link rel="stylesheet" href="./static/style.css">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script src="./static/compiler.js"></script>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="brand-row"><div class="logo">CL<span>✳</span></div><div><b>Compiler Lab</b><small>DESIGN WORKBENCH</small></div></div>
+    <div class="nav-label">WORKSPACE</div>
+    <a class="nav-item selected" href="#editor"><span>⌘</span> Code workspace</a>
+    <a class="nav-item" href="#results"><span>▦</span> Analysis outputs</a>
+    <div class="side-card"><div class="side-icon">⌬</div><b>Compiler pipeline</b><p>Source → TAC → Blocks → CFG → Target code</p><div class="pipeline-line"><i></i><i></i><i></i><i></i><i></i></div></div>
+    <div class="sidebar-bottom"><span class="status-dot"></span> Local engine ready<small>Educational compiler · v2.0</small></div>
+  </aside>
+  <main class="main">
+    <header class="topbar"><div><span class="crumb">WORKSPACE</span><span class="slash">/</span><b>Untitled program</b></div><div class="top-actions"><span class="engine-status"><i></i> Engine online</span><button class="icon-btn" id="themeBtn" title="Toggle theme">◐</button></div></header>
+    <section class="welcome">
+      <div><div class="eyebrow"><span></span> COMPILER DESIGN · VISUAL LAB</div><h1>Understand what your code<br><em>becomes.</em></h1><p>Compile a C-like program or three-address code, inspect each stage, and explore its control flow.</p></div>
+      <div class="hero-art" aria-hidden="true"><div class="orbit orbit-a"></div><div class="orbit orbit-b"></div><div class="core">C<span>→</span>IR</div><div class="node n1">TAC</div><div class="node n2">CFG</div><div class="node n3">ASM</div></div>
+    </section>
+    <section class="editor-layout" id="editor">
+      <article class="surface editor-card">
+        <div class="card-head"><div class="card-title"><span class="number">01</span><div><h2>Source editor</h2><p>Write or paste your program</p></div></div><div class="head-controls"><select id="mode" aria-label="Input mode"><option value="c">C-like source</option><option value="ir">Intermediate code · TAC</option></select><button class="small-btn" id="exampleBtn">Load example ↗</button></div></div>
+        <div class="editor-toolbar"><span><i class="live-dot"></i> <span id="fileLabel">main.c</span></span><span id="cursorInfo">Ln 1, Col 1</span><span id="charCount">0 characters</span></div>
+        <div class="editor-wrap"><div class="line-numbers" id="lineNumbers">1</div><textarea id="source" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Code editor">int a;
+int b;
+a = 10;
+b = 20;
+
+if (a < b) {
+    a = a + 5;
+} else {
+    a = a - 5;
+}
+return a;</textarea></div>
+        <div class="editor-footer"><span><kbd>Ctrl</kbd> + <kbd>Enter</kbd> to compile</span><span>Educational language subset</span></div>
+        <div class="compile-row"><label class="check-control"><input type="checkbox" id="optimize"><span class="fake-check"></span> Optimize constant expressions</label><div class="run-actions"><button class="ghost-btn" id="clearBtn">Clear</button><button class="compile-btn" id="compileBtn"><span>▶</span> Compile program</button></div></div>
+        <div id="errorBox" class="diagnostic error-box" hidden></div>
+        <div id="warningBox" class="diagnostic warning-box" hidden></div>
+      </article>
+      <article class="surface metrics-card">
+        <div class="card-head"><div class="card-title"><span class="number purple">02</span><div><h2>Build overview</h2><p>Live analysis metrics</p></div></div><span class="tiny-tag">SESSION</span></div>
+        <div class="metrics-grid"><div class="metric"><span>Instructions</span><strong id="instructionCount">—</strong><small>Intermediate operations</small></div><div class="metric"><span>Basic blocks</span><strong id="blockCount">—</strong><small>Leader algorithm</small></div><div class="metric"><span>CFG edges</span><strong id="edgeCount">—</strong><small>Control transfers</small></div><div class="metric"><span>Temporaries</span><strong id="tempCount">—</strong><small>Generated values</small></div></div>
+        <div class="build-status"><div class="status-graphic">✓</div><div><b id="buildTitle">Ready to compile</b><p id="buildMessage">Run the compiler to populate the analysis panels.</p></div></div>
+        <div class="symbols-area"><div class="subhead"><b>Symbol table</b><span id="symbolCount">0 symbols</span></div><div id="symbolTable" class="symbol-empty">Symbols will appear after compilation.</div></div>
+      </article>
+    </section>
+    <section class="results-section" id="results">
+      <div class="results-heading"><div><div class="eyebrow">COMPILER OUTPUT</div><h2>Analysis workbench</h2><p>Explore each stage of the compilation pipeline.</p></div><button class="export-btn" id="exportBtn" disabled>⇩ Export report</button></div>
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-tab="tacPane"><span>01</span> Three-address code</button>
+        <button class="tab" data-tab="blocksPane"><span>02</span> Basic blocks</button>
+        <button class="tab" data-tab="graphPane"><span>03</span> Flow graph</button>
+        <button class="tab" data-tab="asmPane"><span>04</span> Code generation</button>
+      </div>
+      <div class="surface output-surface">
+        <div class="output-top"><div><span class="output-dot"></span><b id="outputTitle">Three-address code</b><small id="outputSub">Intermediate representation</small></div><button class="copy-btn" id="copyBtn" disabled>▢ Copy output</button></div>
+        <div class="pane active" id="tacPane"><div class="empty-state"><div>⌘</div><b>Waiting for compilation</b><p>Your three-address code will appear here.</p></div></div>
+        <div class="pane" id="blocksPane"><div class="empty-state"><div>▦</div><b>Basic blocks are waiting</b><p>Compile a program to split it into blocks.</p></div></div>
+        <div class="pane" id="graphPane"><div class="empty-state"><div>⑂</div><b>Control flow not generated</b><p>Your graph will show branches and jump edges.</p></div></div>
+        <div class="pane" id="asmPane"><div class="empty-state"><div>⌘</div><b>No target instructions yet</b><p>Generated pseudo-assembly will appear here.</p></div></div>
+      </div>
+    </section>
+    <footer><span>Compiler Lab Pro <span class="footer-dot">●</span> Built for compiler design learning</span><span>Generated assembly is illustrative, not executable machine code.</span></footer>
+  </main>
+</div>
+<script src="./static/app.js"></script>
+</body></html>

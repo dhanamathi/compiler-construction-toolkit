@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090d18">
+  <meta name="description" content="Convert regular expressions into Thompson NFAs and subset-construction DFAs. Recognize regular expressions from images with browser-based OCR.">
+  <title>Regex → NFA / DFA Studio</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script>
+    tailwind = { config: { corePlugins: { preflight: false } } };
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg app-navbar">
+    <div class="container-xl">
+      <a class="navbar-brand brand" href="#" aria-label="Regex Automata Studio home">
+        <span class="brand-mark" aria-hidden="true">λ</span>
+        <span>Automata<span class="brand-accent">Lab</span></span>
+      </a>
+      <span class="navbar-text d-none d-sm-inline">Regex → NFA → DFA</span>
+      <span class="github-link">Client-side · no API key</span>
+    </div>
+  </nav>
+
+  <main class="container-xl app-shell">
+    <header class="hero">
+      <div class="eyebrow"><span class="pulse-dot"></span> AUTOMATA THEORY WORKSPACE</div>
+      <h1>From regex to <span>finite automata.</span></h1>
+      <p>Build a Thompson NFA, convert it into a DFA, and test strings — with every step shown.</p>
+    </header>
+
+    <section class="input-grid" aria-label="Regular expression input">
+      <article class="panel input-panel">
+        <div class="panel-heading">
+          <div>
+            <div class="section-kicker">01 / INPUT</div>
+            <h2>Enter an expression</h2>
+          </div>
+          <span class="input-badge">TEXT</span>
+        </div>
+        <label for="regexInput" class="form-label">Regular expression</label>
+        <div class="regex-entry">
+          <span class="regex-prefix" aria-hidden="true">/</span>
+          <input id="regexInput" class="form-control regex-input" type="text" autocomplete="off" spellcheck="false"
+            placeholder="e.g. a(b|c)*" aria-describedby="regexHelp regexError">
+          <span class="regex-suffix" aria-hidden="true">/</span>
+        </div>
+        <div id="regexHelp" class="form-text">Operators: <code>|</code> union · <code>*</code> Kleene · <code>+</code> positive · <code>?</code> optional · parentheses · implicit concatenation</div>
+        <div id="regexError" class="error-message" role="alert" hidden></div>
+        <div class="examples-row">
+          <span>Try</span>
+          <button type="button" class="example-chip" data-expression="a(b|c)*">a(b|c)*</button>
+          <button type="button" class="example-chip" data-expression="(a|b)*abb">(a|b)*abb</button>
+          <button type="button" class="example-chip" data-expression="a+b?">a+b?</button>
+          <button type="button" class="example-chip" data-expression="(0|1)*">(0|1)*</button>
+        </div>
+        <div class="action-row">
+          <button id="generateButton" class="btn btn-primary action-primary" type="button"><span aria-hidden="true">✦</span> Generate automata</button>
+          <button id="clearRegexButton" class="btn btn-outline-secondary" type="button">Clear</button>
+        </div>
+      </article>
+
+      <article class="panel image-panel">
+        <div class="panel-heading">
+          <div>
+            <div class="section-kicker">02 / IMAGE OCR</div>
+            <h2>Upload a regex image</h2>
+          </div>
+          <span class="input-badge badge-purple">BROWSER OCR</span>
+        </div>
+        <label id="dropZone" for="imageInput" class="drop-zone">
+          <input id="imageInput" class="visually-hidden-focusable" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" aria-label="Choose an image containing a regular expression">
+          <span class="upload-icon" aria-hidden="true">↑</span>
+          <span class="drop-title">Drop a regex image here or <span>browse</span></span>
+          <span class="drop-caption">Upload a clear image of the expression only · JPG, PNG, WEBP</span>
+        </label>
+        <div id="imagePreviewWrap" class="image-preview-wrap" hidden>
+          <img id="imagePreview" alt="Preview of the uploaded regular expression image">
+          <button id="clearImageButton" class="btn btn-sm btn-outline-secondary" type="button">Clear image</button>
+        </div>
+        <div class="ocr-actions">
+          <button id="extractButton" class="btn btn-outline-light" type="button" disabled>Extract text</button>
+          <button id="findRegexButton" class="btn btn-outline-light" type="button">Update regex input</button>
+        </div>
+        <div id="ocrProgressWrap" class="ocr-progress-wrap" hidden>
+          <div class="progress-label"><span id="ocrStatus">Preparing OCR…</span><span id="ocrPercent">0%</span></div>
+          <div class="progress" role="progressbar" aria-label="OCR progress" aria-valuemin="0" aria-valuemax="100">
+            <div id="ocrProgress" class="progress-bar"></div>
+          </div>
+        </div>
+        <label for="ocrText" class="form-label ocr-label">Recognized expression text <span>Check OCR, then update the regex input.</span></label>
+        <textarea id="ocrText" class="form-control ocr-textarea" rows="3" placeholder="OCR text will appear here. For best results, upload a cropped image containing only the regular expression."></textarea>
+        <div id="ocrMessage" class="ocr-message" role="status" aria-live="polite"></div>
+        <button id="generateFromImageButton" class="btn btn-primary image-generate" type="button">Generate automata from regex</button>
+      </article>
+    </section>
+
+    <section id="workspace" class="results-section" aria-label="Generated automata" hidden>
+      <div class="results-heading">
+        <div>
+          <div class="section-kicker">03 / AUTOMATA WORKSPACE</div>
+          <h2>Your generated solution</h2>
+        </div>
+        <div class="export-actions">
+          <button id="copyRegexButton" class="btn btn-sm btn-outline-secondary" type="button">Copy regex</button>
+          <button id="copySolutionButton" class="btn btn-sm btn-outline-secondary" type="button">Copy solution</button>
+          <button id="downloadButton" class="btn btn-sm btn-outline-secondary" type="button">Download .txt</button>
+          <button id="printButton" class="btn btn-sm btn-outline-secondary" type="button">Print / PDF</button>
+          <button id="resetButton" class="btn btn-sm btn-outline-secondary" type="button">Reset</button>
+        </div>
+      </div>
+      <div class="result-summary panel">
+        <div><span class="summary-label">REGULAR EXPRESSION</span><code id="summaryRegex">—</code></div>
+        <div><span class="summary-label">ALPHABET</span><code id="summaryAlphabet">—</code></div>
+        <div><span class="summary-label">STATES</span><span id="summaryCounts">—</span></div>
+      </div>
+
+      <ul class="nav nav-tabs result-tabs" id="resultTabs" role="tablist">
+        <li class="nav-item" role="presentation"><button class="nav-link active" id="nfa-tab" data-bs-toggle="tab" data-bs-target="#nfa-pane" type="button" role="tab" aria-controls="nfa-pane" aria-selected="true">NFA diagram</button></li>
+        <li class="nav-item" role="presentation"><button class="nav-link" id="dfa-tab" data-bs-toggle="tab" data-bs-target="#dfa-pane" type="button" role="tab" aria-controls="dfa-pane" aria-selected="false">DFA diagram</button></li>
+        <li class="nav-item" role="presentation"><button class="nav-link" id="tables-tab" data-bs-toggle="tab" data-bs-target="#tables-pane" type="button" role="tab" aria-controls="tables-pane" aria-selected="false">Transition tables</button></li>
+        <li class="nav-item" role="presentation"><button class="nav-link" id="solution-tab" data-bs-toggle="tab" data-bs-target="#solution-pane" type="button" role="tab" aria-controls="solution-pane" aria-selected="false">Solution</button></li>
+      </ul>
+      <div class="tab-content panel results-content">
+        <div class="tab-pane fade show active" id="nfa-pane" role="tabpanel" aria-labelledby="nfa-tab" tabindex="0">
+          <div class="diagram-heading"><div><h3>Nondeterministic finite automaton</h3><p>Thompson construction · ε transitions shown as <code>ε</code></p></div><div class="legend"><span><i class="legend-start"></i> Start</span><span><i class="legend-final"></i> Accepting</span></div></div>
+          <div id="nfaDiagram" class="diagram-container" role="img" aria-label="Generated NFA state diagram"></div>
+        </div>
+        <div class="tab-pane fade" id="dfa-pane" role="tabpanel" aria-labelledby="dfa-tab" tabindex="0">
+          <div class="diagram-heading"><div><h3>Deterministic finite automaton</h3><p>Reachable subsets produced by epsilon-closure and subset construction.</p></div><div class="legend"><span><i class="legend-start"></i> Start</span><span><i class="legend-final"></i> Accepting</span></div></div>
+          <div id="dfaDiagram" class="diagram-container" role="img" aria-label="Generated DFA state diagram"></div>
+        </div>
+        <div class="tab-pane fade" id="tables-pane" role="tabpanel" aria-labelledby="tables-tab" tabindex="0">
+          <div class="table-grid">
+            <section><h3>NFA transition table</h3><div id="nfaTable" class="table-responsive"></div></section>
+            <section><h3>DFA transition table</h3><div id="dfaTable" class="table-responsive"></div></section>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="solution-pane" role="tabpanel" aria-labelledby="solution-tab" tabindex="0">
+          <div class="solution-toolbar"><h3>Exam-friendly solution</h3><button id="copySolutionInlineButton" class="btn btn-sm btn-outline-secondary" type="button">Copy</button></div>
+          <pre id="solutionText" class="solution-text"></pre>
+        </div>
+      </div>
+    </section>
+
+    <section id="tester" class="tester panel" hidden aria-labelledby="testerTitle">
+      <div class="tester-intro">
+        <div class="section-kicker">04 / TEST A STRING</div>
+        <h2 id="testerTitle">Does it match?</h2>
+        <p>Run a string through the generated DFA and follow every state transition.</p>
+      </div>
+      <div class="tester-form">
+        <label for="testString" class="form-label">Input string <span>(the empty string is allowed)</span></label>
+        <div class="input-group">
+          <input id="testString" class="form-control" type="text" autocomplete="off" spellcheck="false" placeholder="Enter a string, e.g. ab">
+          <button id="testStringButton" class="btn btn-primary" type="button">Test string</button>
+        </div>
+        <div id="testResult" class="test-result" role="status" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="learn-strip" aria-label="Algorithm overview">
+      <div><span class="learn-number">01</span><div><h3>Parse</h3><p>Operator precedence builds a syntax tree: repetition, concatenation, then union.</p></div></div>
+      <div><span class="learn-number">02</span><div><h3>Thompson NFA</h3><p>Small automata are combined with ε edges for union, concatenation, and closure.</p></div></div>
+      <div><span class="learn-number">03</span><div><h3>Subset DFA</h3><p>ε-closures group NFA states into DFA states; accepting subsets contain an NFA final state.</p></div></div>
+    </section>
+    <footer class="app-footer">Runs in your browser · No backend or API key required for automata generation</footer>
+  </main>
+  <div id="toast" class="app-toast" role="status" aria-live="polite"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

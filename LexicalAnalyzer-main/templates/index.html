@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lexical Analyzer Using Lex or a Program</title>
+    <!-- Google Fonts for clean modern typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Top Navigation Header -->
+    <header class="app-header">
+        <div class="header-container">
+            <div class="header-brand">
+                <div class="brand-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="4 17 10 11 4 5"></polyline>
+                        <line x1="12" y1="19" x2="20" y2="19"></line>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="project-title">Lexical Analyzer Using Lex or a Program</h1>
+                    <p class="project-subtitle">Compiler Design Lab & Mini Project Demonstration</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button type="button" id="btnTheoryModal" class="btn btn-outline-info" title="View Compiler Design Concepts & Lex/Flex Specification">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    Lex / Flex Info
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-content">
+        <!-- Error & Notification Banner -->
+        <div id="alertBanner" class="alert-banner hidden" role="alert">
+            <div class="alert-content">
+                <span id="alertIcon" class="alert-icon">⚠️</span>
+                <span id="alertMessage" class="alert-message"></span>
+            </div>
+            <button type="button" id="alertCloseBtn" class="alert-close" aria-label="Close notification">&times;</button>
+        </div>
+
+        <!-- Top Input & Action Section -->
+        <section class="editor-section card">
+            <div class="card-header">
+                <div class="card-title-group">
+                    <h2 class="card-title">Source Code Editor</h2>
+                    <span class="editor-hint">Supports C-like syntax: keywords, identifiers, operators, constants, strings, comments</span>
+                </div>
+                <!-- Sample Code Selection -->
+                <div class="sample-code-controls">
+                    <label for="sampleSelect" class="sr-only">Choose Sample Code</label>
+                    <select id="sampleSelect" class="select-dropdown" aria-label="Sample code presets">
+                        <option value="" selected disabled>📂 Select a Sample Preset...</option>
+                        <option value="c_program">1. Full C Program (main, types, if-else)</option>
+                        <option value="arithmetic">2. Arithmetic & Logic Expressions</option>
+                        <option value="conditionals">3. If-Else Decision Logic</option>
+                        <option value="loops">4. While & For Loop Constructs</option>
+                        <option value="strings_comments">5. Comments & String Literals</option>
+                        <option value="invalid_tokens">6. Invalid Tokens / Lexical Errors</option>
+                    </select>
+                    <button type="button" id="btnLoadSample" class="btn btn-secondary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Load Sample
+                    </button>
+                </div>
+            </div>
+
+            <!-- Code Input Area -->
+            <div class="editor-wrapper">
+                <textarea 
+                    id="sourceCodeInput" 
+                    class="code-editor" 
+                    placeholder="Enter or paste your C/source code here...&#10;&#10;Example:&#10;int main() {&#10;    float total = 10.5 + 20;&#10;    // Check total&#10;    if (total >= 30.0) {&#10;        return 1;&#10;    }&#10;    return 0;&#10;}" 
+                    spellcheck="false"
+                    rows="12"></textarea>
+            </div>
+
+            <!-- Editor Action Buttons -->
+            <div class="editor-actions">
+                <div class="left-actions">
+                    <span id="charLineCounter" class="counter-badge">Lines: 0 | Characters: 0</span>
+                </div>
+                <div class="right-actions">
+                    <button type="button" id="btnClear" class="btn btn-outline" title="Clear input code and results">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                        Clear
+                    </button>
+                    <button type="button" id="btnAnalyze" class="btn btn-primary">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                        <span id="analyzeBtnText">Analyze Code</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Token Count Summary Section -->
+        <section id="summarySection" class="summary-section">
+            <h2 class="section-title">Token Count Summary</h2>
+            <div class="stats-grid">
+                <div class="stat-card stat-total" data-filter="all">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="countTotal">0</div>
+                        <div class="stat-label">Total Tokens</div>
+                    </div>
+                </div>
+                <div class="stat-card stat-keyword" data-filter="Keyword">
+                    <div class="stat-icon">🔑</div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="countKeywords">0</div>
+                        <div class="stat-label">Keywords</div>
+                    </div>
+                </div>
+                <div class="stat-card stat-identifier" data-filter="Identifier">
+                    <div class="stat-icon">🏷️</div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="countIdentifiers">0</div>
+                        <div class="stat-label">Identifiers</div>
+                    </div>
+                </div>
+                <div class="stat-card stat-operator" data-filter="Operator">
+                    <div class="stat-icon">⚙️</div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="countOperators">0</div>
+                        <div class="stat-label">Operators</div>
+                    </div>
+                </div>
+                <div class="stat-card stat-constant" data-filter="Constant">
+                    <div class="stat-icon">🔢</div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="countConstants">0</div>
+                        <div class="stat-label">Constants</div>
+                    </div>
+                </div>
+                <div class="stat-card stat-string" data-filter="String Literal">
+                    <div class="stat-icon">💬</div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="countStrings">0</div>
+                        <div class="stat-label">String Literals</div>
+                    </div>
+                </div>
+                <div class="stat-card stat-symbol" data-filter="Special Symbol">
+                    <div class="stat-icon">🔣</div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="countSymbols">0</div>
+                        <div class="stat-label">Special Symbols</div>
+                    </div>
+                </div>
+                <div class="stat-card stat-comment" data-filter="Comment">
+                    <div class="stat-icon">📝</div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="countComments">0</div>
+                        <div class="stat-label">Comments</div>
+                    </div>
+                </div>
+                <div class="stat-card stat-invalid" data-filter="Invalid Token">
+                    <div class="stat-icon">⚠️</div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="countInvalid">0</div>
+                        <div class="stat-label">Invalid Tokens</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analysis Results Section -->
+        <section id="resultsSection" class="results-section card">
+            <div class="card-header results-header">
+                <div>
+                    <h2 class="card-title">Token Analysis Results</h2>
+                    <p id="resultsMetaText" class="results-meta">Run the analyzer to inspect the lexical stream.</p>
+                </div>
+                
+                <!-- Table Search & Filter Controls -->
+                <div class="table-controls">
+                    <div class="search-box">
+                        <input type="text" id="tokenSearchInput" placeholder="Filter tokens..." class="input-search">
+                    </div>
+                    <select id="typeFilterSelect" class="select-dropdown" aria-label="Filter by token type">
+                        <option value="all">All Types</option>
+                        <option value="Keyword">Keywords</option>
+                        <option value="Identifier">Identifiers</option>
+                        <option value="Operator">Operators</option>
+                        <option value="Constant">Constants</option>
+                        <option value="String Literal">String Literals</option>
+                        <option value="Special Symbol">Special Symbols</option>
+                        <option value="Comment">Comments</option>
+                        <option value="Invalid Token">Invalid Tokens</option>
+                    </select>
+                    <button type="button" id="btnExportCsv" class="btn btn-sm btn-outline" title="Export tokens as CSV">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        CSV
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table Container -->
+            <div class="table-responsive">
+                <table id="tokenTable" class="token-table">
+                    <thead>
+                        <tr>
+                            <th class="col-index">#</th>
+                            <th class="col-token">Token</th>
+                            <th class="col-type">Token Type</th>
+                            <th class="col-line">Line Number</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tokenTableBody">
+                        <tr class="empty-placeholder-row">
+                            <td colspan="4" class="text-center py-4">
+                                <div class="empty-state">
+                                    <div class="empty-state-icon">🔍</div>
+                                    <p class="empty-state-title">No Tokens Analyzed Yet</p>
+                                    <p class="empty-state-desc">Enter code in the editor above or select a sample preset, then click <strong>Analyze Code</strong>.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Theory & Lex/Flex Specification Modal -->
+    <div id="theoryModal" class="modal-backdrop hidden">
+        <div class="modal-container">
+            <div class="modal-header">
+                <div>
+                    <h3 class="modal-title">Lexical Analysis & Lex/Flex Reference</h3>
+                    <p class="modal-subtitle">Compiler Design concepts & equivalent Lex specification (`lexer.l`)</p>
+                </div>
+                <button type="button" id="btnModalClose" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="theory-grid">
+                    <div class="theory-card">
+                        <h4>1. What is a Lexical Analyzer (Scanner)?</h4>
+                        <p>A Lexical Analyzer is the <strong>first phase of a compiler</strong>. Its main task is to read the input characters of the source program, group them into meaningful sequences called <strong>lexemes</strong>, and produce an output stream of <strong>tokens</strong> for the syntax analyzer (parser).</p>
+                    </div>
+                    <div class="theory-card">
+                        <h4>2. Terminology: Token, Pattern & Lexeme</h4>
+                        <ul>
+                            <li><strong>Token:</strong> An abstract symbol representing a category (e.g., <code>KEYWORD</code>, <code>IDENTIFIER</code>).</li>
+                            <li><strong>Pattern:</strong> The rule (regular expression) defining how the token is formed.</li>
+                            <li><strong>Lexeme:</strong> The actual character sequence in the source code matching the pattern (e.g., <code>int</code>, <code>count</code>, <code>3.14</code>).</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h4 class="mt-4 mb-2">Equivalent Lex / Flex Specification (<code>lexer.l</code>)</h4>
+                <p class="small text-muted">Below is the complete Lex specification file included in this project for compiling with <code>flex</code> and <code>gcc</code>:</p>
+                <div class="code-preview-box">
+                    <pre><code>%{
+#include &lt;stdio.h&gt;
+int line_no = 1;
+%}
+
+%%
+\n                      { line_no++; }
+[ \t\r]+                { /* Skip whitespace */ }
+"//".*                  { printf("Line %d: [Comment] %s\n", line_no, yytext); }
+"/*"([^*]|\*+[^*/])*\*+"/" { 
+    /* Multi-line comment: update line count */
+    for(int i=0; yytext[i]; i++) if(yytext[i]=='\n') line_no++;
+    printf("Line %d: [Comment] %s\n", line_no, yytext); 
+}
+"int"|"float"|"if"|"else"|"while"|"return"|"void"|"char"|"double"|"for" {
+    printf("Line %d: [Keyword] %s\n", line_no, yytext);
+}
+[a-zA-Z_][a-zA-Z0-9_]*  { printf("Line %d: [Identifier] %s\n", line_no, yytext); }
+[0-9]+(\.[0-9]+)?       { printf("Line %d: [Constant] %s\n", line_no, yytext); }
+\"([^\\\"]|\\.)*\"      { printf("Line %d: [String Literal] %s\n", line_no, yytext); }
+"=="|"!="|&lt;=|&gt;=|"&&"|"||"|"++"|"--"|"+="|"-=" {
+    printf("Line %d: [Operator (Multi)] %s\n", line_no, yytext);
+}
+[+\-*/%=&lt;&gt;!&amp;|^~]        { printf("Line %d: [Operator] %s\n", line_no, yytext); }
+[()\[\]{},;:?]          { printf("Line %d: [Special Symbol] %s\n", line_no, yytext); }
+.                       { printf("Line %d: [Invalid Token] %s\n", line_no, yytext); }
+%%
+
+int yywrap() { return 1; }
+int main() {
+    printf("=== Lexical Analyzer Using Flex ===\n");
+    yylex();
+    return 0;
+}
+</code></pre>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnModalCloseFooter" class="btn btn-secondary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Footer -->
+    <footer class="app-footer">
+        <p>Lexical Analyzer Using Lex or a Program &bull; Compiler Design Mini Project &bull; Built with Python Flask, JavaScript, and CSS</p>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

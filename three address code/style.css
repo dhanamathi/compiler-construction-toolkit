@@ -1,0 +1,162 @@
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f1f5f9;
+  color: #1e293b;
+  line-height: 1.6;
+}
+
+header {
+  background: linear-gradient(135deg, #172554, #2563eb);
+  color: white;
+  text-align: center;
+  padding: 35px 15px;
+}
+
+header h1 {
+  font-size: 30px;
+  margin-bottom: 8px;
+}
+
+header p {
+  color: #dbeafe;
+}
+
+.container {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 0 18px;
+}
+
+.card {
+  background: white;
+  padding: 25px;
+  margin-bottom: 22px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(15, 23, 42, 0.08);
+}
+
+h2 {
+  color: #1d4ed8;
+  margin-bottom: 12px;
+}
+
+input {
+  width: 100%;
+  padding: 13px;
+  margin: 15px 0;
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+  font-size: 16px;
+}
+
+input:focus {
+  outline: 2px solid #60a5fa;
+  border-color: #2563eb;
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+button {
+  padding: 11px 17px;
+  border: none;
+  border-radius: 7px;
+  background: #2563eb;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  filter: brightness(0.9);
+}
+
+.secondary {
+  background: #475569;
+}
+
+.danger {
+  background: #dc2626;
+}
+
+.copy-btn {
+  margin-top: 15px;
+  background: #15803d;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+
+th, td {
+  padding: 13px;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+th {
+  background: #eff6ff;
+  color: #1e40af;
+}
+
+td:nth-child(2) {
+  font-family: monospace;
+  font-size: 15px;
+}
+
+.empty {
+  text-align: center;
+  color: #64748b;
+}
+
+pre {
+  background: #0f172a;
+  color: #86efac;
+  padding: 18px;
+  border-radius: 8px;
+  margin-top: 12px;
+  overflow-x: auto;
+}
+
+#error {
+  color: #dc2626;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  color: #64748b;
+}
+
+@media (max-width: 600px) {
+  header h1 {
+    font-size: 23px;
+  }
+
+  .card {
+    padding: 18px;
+  }
+
+  .buttons button {
+    flex: 1 1 auto;
+  }
+}
